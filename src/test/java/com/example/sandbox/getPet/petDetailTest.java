@@ -1,6 +1,7 @@
 package com.example.sandbox.getPet;
 
 import com.example.sandbox.Common;
+import com.example.sandbox.util.Tools;
 import com.example.sandbox.util.enums.PetStatus;
 import io.restassured.response.Response;
 import org.testng.Assert;
@@ -81,32 +82,13 @@ public class petDetailTest extends Common {
 
         List<Object> ids = response.jsonPath().getList("id");
 
-        Integer nonExistingId = findNonExistingId(new HashSet<>(ids));
+        Integer nonExistingId = Tools.findNonExistingId(new HashSet<>(ids));
 
         response = getUrl(petById.replace("{petId}", nonExistingId.toString()));
         Assert.assertEquals(response.getStatusCode(),404,"Invalid response code");
         Assert.assertTrue(response.time() < 500, "Response time is longer than 500 milliseconds");
     }
 
-    /**
-     * Returns a random number which is not included in the given set of numbers
-     * @param ids
-     * @return random id
-     */
-    public Integer findNonExistingId(Set<Object> ids) {
-        int newId;
-        int maxAttempts = 1000;
-        int attempts = 0;
 
-        do {
-            newId = ThreadLocalRandom.current().nextInt(1, 999999);
-            attempts++;
-            if (attempts > maxAttempts) {
-                throw new RuntimeException("Unable to find a non existing ID after " + maxAttempts + " attempts");
-            }
-        } while (ids.contains(newId));
-
-        return newId;
-    }
 
 }
