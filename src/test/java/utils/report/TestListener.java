@@ -15,8 +15,13 @@ public class TestListener implements ITestListener {
         ITestListener.super.onTestStart(result);
         String currentClassname = "Test class: ".concat(result.getTestClass().getRealClass().getSimpleName());
         String methodName = result.getMethod().getMethodName();
+        TestNameHolder.setTestName(methodName);
         String[] categories = result.getMethod().getGroups();
         this.reporter.makeLeft(result.getMethod().getDescription(), currentClassname, methodName, categories);
+    }
+
+    public void onTestFinish(ITestResult result) {
+        TestNameHolder.clear();
     }
 
     public void onTestSuccess(ITestResult result) {
